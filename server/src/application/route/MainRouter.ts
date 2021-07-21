@@ -8,6 +8,7 @@ import { DefaultController } from '../controller/DefaultController';
 const router = Router();
 
 const defaultController = new DefaultController();
+router.use('/api/balance', defaultController.balance);
 router.use('/api', defaultController.api404);
 
 export default router;
