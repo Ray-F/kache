@@ -1,2 +1,2 @@
-# pizza-club
-Pizza Club for MYOB IT Case Competition, 2021
+# Kache
+Team Pizza Club for MYOB IT Case Competition, 2021
