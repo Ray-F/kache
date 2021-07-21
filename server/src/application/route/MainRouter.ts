@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { DefaultController } from '../controller/DefaultController';
+import { WalletController } from '../controller/WalletController';
 
 /*
  * Main routing file to manage all application route.
@@ -8,7 +9,14 @@ import { DefaultController } from '../controller/DefaultController';
 const router = Router();
 
 const defaultController = new DefaultController();
-router.use('/api/balance', defaultController.balance);
+
+// Wallet
+const walletController = new WalletController();
+const walletRouter = Router();
+router.use('/api', walletRouter);
+walletRouter.use('/transactions', walletController.transactionsReceived);
+walletRouter.use('/balance', walletController.balance);
+
 router.use('/api', defaultController.api404);
 
 export default router;

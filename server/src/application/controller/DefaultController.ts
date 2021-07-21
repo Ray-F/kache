@@ -1,19 +1,7 @@
 import { BaseController } from './BaseController';
 import { Request, Response } from 'express';
-import { EtherAdapter } from '../../infrastructure/repository/EtherAdapter';
-import Config from '../../util/Config';
-
-const etherAdapter = new EtherAdapter(Config.ETH_NODE_URL, Config.ETHERSCAN_API_KEY);
 
 class DefaultController extends BaseController {
-
-  /**
-   * Returns balance of an ethereum wallet based on the wallet's address.
-   */
-  async balance(req: Request, res: Response) {
-    const bal = await etherAdapter.queryAddressBalance(req.query.address as string);
-    res.json(bal);
-  }
 
   /**
    * Default landing page for non implemented /api route.

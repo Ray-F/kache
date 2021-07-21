@@ -1,8 +1,9 @@
 import { BlockTag, EtherscanProvider, JsonRpcProvider } from '@ethersproject/providers';
 import { ethers, utils } from 'ethers';
-import { logger } from '../../util/Logger';
+import { logger } from '../util/Logger';
 
 const MAINNET_NETWORK = "mainnet";
+const TEST_NETWORK = "ropsten";
 
 class EtherAdapter {
   private provider: JsonRpcProvider;
@@ -10,7 +11,7 @@ class EtherAdapter {
 
   constructor(nodeUrl: string, etherScanApiKey: string) {
     this.provider = new ethers.providers.JsonRpcProvider(nodeUrl);
-    this.scanProvider = new ethers.providers.EtherscanProvider(MAINNET_NETWORK, etherScanApiKey);
+    this.scanProvider = new ethers.providers.EtherscanProvider(TEST_NETWORK, etherScanApiKey);
 
     this.provider.getBlockNumber().then((result) => {
       logger.logInfo(`Connected to Ethereum Node: ${result}`)
@@ -35,9 +36,9 @@ class EtherAdapter {
   }
 
   /**
-   * Get all transactions originating from an
+   * Get all transactionsReceived originating from an
    */
-  public async queryAddressTransactions(address: string, since: BlockTag) {
+  public async queryTransactionsReceivedAtAddress(address: string, since?: BlockTag) {
     return await this.scanProvider.getHistory(address, since);
   }
 
