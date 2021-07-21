@@ -1,0 +1,30 @@
+service: kache-lambda
+useDotenv: true
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  stage: dev
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  region: ap-southeast-2
+  environment:
+    MONGODB_URI: ${env:MONGODB_URI}
+    ETH_NODE_URL: ${env:ETH_NODE_URL}
+    ETHERSCAN_API_KEY: ${env:ETHERSCAN_API_KEY}
+    ENV: PROD
+
+functions:
+  transactions:
+    handler: dist/lambda.handler
+    events:
+      - http: GET /api/transactions
+
+  balance:
+    handler: dist/lambda.handler
+    events:
+      - http: GET /api/balance
+
+plugins:
+  - serverless-offline
