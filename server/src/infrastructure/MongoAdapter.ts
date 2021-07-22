@@ -11,6 +11,11 @@ class MongoAdapter {
   public db: Db;
 
   /**
+   * If the DB is connected.
+   */
+  private _isConnected = false;
+
+  /**
    * Private MongoClient for purposes of getting another database from the same adapter instance.
    */
   private client: MongoClient;
@@ -26,6 +31,7 @@ class MongoAdapter {
     client.connect((err) => {
       if (err) throw err;
       this.db = client.db(dbName);
+      this._isConnected = true;
       logger.logInfo('MongoDB connected');
     });
 
@@ -52,6 +58,17 @@ class MongoAdapter {
   public static getInstance(): MongoAdapter {
     if (!this._instance) throw new Error('No instance of MongoAdapter exists!');
     return this._instance;
+  }
+
+  /**
+   * Returns `true` once the database is connected.
+   */
+  public async isConnected(): Promise<boolean> {
+    while (!this._isConnected) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+
+    return true
   }
 }
 
