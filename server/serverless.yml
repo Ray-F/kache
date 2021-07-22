@@ -13,7 +13,7 @@ provider:
     MONGODB_URI: ${env:MONGODB_URI}
     ETH_NODE_URL: ${env:ETH_NODE_URL}
     ETHERSCAN_API_KEY: ${env:ETHERSCAN_API_KEY}
-    ENV: PROD
+    COINLAYER_ACCESS_KEY: ${env:COINLAYER_ACCESS_KEY}
 
 functions:
   query-blockchain-payments:
