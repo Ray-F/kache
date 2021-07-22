@@ -16,15 +16,13 @@ provider:
     ENV: PROD
 
 functions:
-  transactions:
+  query-blockchain-payments:
+    name: Query Blockchain Payments
+    description: Queries payments on the blockchain and links them to MYOB asset accounts
     handler: dist/lambda.handler
     events:
-      - http: GET /api/transactions
+      - http: GET /api/action/query-blockchain-payments
 
-  balance:
-    handler: dist/lambda.handler
-    events:
-      - http: GET /api/balance
 
 plugins:
   - serverless-offline
