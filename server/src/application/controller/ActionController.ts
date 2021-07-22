@@ -12,13 +12,15 @@ class ActionController extends BaseController {
 
   public async runPaymentCheck(req: Request, res: Response) {
     const mongoAdapter = MongoAdapter.getInstance();
+    const etherService = new EtherService(Config.ETH_NODE_URL, Config.ETHERSCAN_API_KEY);
+
+    // Ensure mongoAdapter is connected before we proceed
     await mongoAdapter.isConnected();
 
     const mutableConfigRepo = new MutableConfigRepository(mongoAdapter);
     const userRepo = new UserRepository(mongoAdapter);
 
     const currencyService = new CurrencyService(Config.COINLAYER_ACCESS_KEY);
-    const etherService = new EtherService(Config.ETH_NODE_URL, Config.ETHERSCAN_API_KEY);
 
     const transactionsProcessed = await processPaymentsReceived(currencyService, etherService, userRepo, mutableConfigRepo);
 
