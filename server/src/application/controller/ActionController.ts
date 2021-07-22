@@ -6,23 +6,29 @@ import { processPaymentsReceived } from '../../usecase/QueryPaymentsReceived';
 import { CurrencyService } from '../../service/CurrencyService';
 import Config from '../../util/Config';
 import { EtherService } from '../../service/EtherService';
+import { BaseController, createJson } from './BaseController';
 
-class ActionController {
+class ActionController extends BaseController {
 
   public async runPaymentCheck(req: Request, res: Response) {
-    const mongoAdapter = MongoAdapter.getInstance()
+    const mongoAdapter = MongoAdapter.getInstance();
+    await mongoAdapter.isConnected();
+
     const mutableConfigRepo = new MutableConfigRepository(mongoAdapter);
     const userRepo = new UserRepository(mongoAdapter);
 
     const currencyService = new CurrencyService(Config.COINLAYER_ACCESS_KEY);
     const etherService = new EtherService(Config.ETH_NODE_URL, Config.ETHERSCAN_API_KEY);
 
-    await processPaymentsReceived(currencyService, etherService, userRepo, mutableConfigRepo);
+    const transactionsProcessed = await processPaymentsReceived(currencyService, etherService, userRepo, mutableConfigRepo);
 
-    res.sendStatus(200);
+    createJson(res,
+               200,
+               `Successfully processed ${transactionsProcessed.length} transactions`,
+               transactionsProcessed);
   }
 }
 
 export {
-  ActionController
-}
+  ActionController,
+};

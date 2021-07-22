@@ -11,13 +11,15 @@ import { weiToEther } from '../util/CurrencyUtil';
 async function processPaymentsReceived(currencyService: CurrencyService,
                                        etherService: EtherService,
                                        userRepo: UserRepository,
-                                       mutableConfigRepo: MutableConfigRepository) {
+                                       mutableConfigRepo: MutableConfigRepository): Promise<CryptoTransaction[]> {
   // TODO: Remove 1 before final deployment
   const lastBlockRead = 1 ?? await mutableConfigRepo.getLastBlockRead();
 
   const currentBlock = await etherService.getCurrentBlockNumber();
 
   const addressesToMonitor = await userRepo.listEthereumAddressesToMonitor();
+
+  const allTransactions: CryptoTransaction[] = [];
 
   for (const address of addressesToMonitor) {
     const queryResp: object[] = await etherService.queryTransactionsReceivedAtAddress(address, lastBlockRead, currentBlock);
@@ -41,12 +43,17 @@ async function processPaymentsReceived(currencyService: CurrencyService,
       }
     }));
 
+    // Add all current transactions for this address to all transactions, to be returned
+    allTransactions.push.apply(allTransactions, transactions);
+
     // TODO: Do something with these "bank" transactions by adding them to the MYOB dashboard
     console.log(transactions);
   }
 
   // Update the last read block on the config DB to match
   await mutableConfigRepo.setLatestBlockRead(currentBlock);
+
+  return allTransactions;
 }
 
 export {
