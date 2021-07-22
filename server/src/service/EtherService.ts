@@ -5,7 +5,7 @@ import { logger } from '../util/Logger';
 const MAINNET_NETWORK = "mainnet";
 const TEST_NETWORK = "ropsten";
 
-class EtherAdapter {
+class EtherService {
   private provider: JsonRpcProvider;
   private scanProvider: EtherscanProvider;
 
@@ -36,14 +36,14 @@ class EtherAdapter {
   }
 
   /**
-   * Get all transactionsReceived originating from an
+   * Get all transactions originating from an `address` since `fromBlock` to `toBlock` (inclusive).
    */
-  public async queryTransactionsReceivedAtAddress(address: string, since?: BlockTag) {
-    return await this.scanProvider.getHistory(address, since);
+  public async queryTransactionsReceivedAtAddress(address: string, fromBlock?: BlockTag, toBlock?: BlockTag) {
+    return await this.scanProvider.getHistory(address, fromBlock, toBlock);
   }
 
 }
 
 export {
-  EtherAdapter
+  EtherService
 }
