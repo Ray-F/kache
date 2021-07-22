@@ -17,7 +17,7 @@ provider:
 
 functions:
   query-blockchain-payments:
-    name: Query Blockchain Payments
+    name: QueryBlockchainPayments
     description: Queries payments on the blockchain and links them to MYOB asset accounts
     handler: dist/lambda.handler
     events:
