@@ -1,7 +1,7 @@
 import { MongoAdapter } from '../../infrastructure/MongoAdapter';
 import Config from '../../util/Config';
+import { Response } from 'express';
 
-// TODO: Replace this db-name with the correct name
 MongoAdapter.build(Config.MONGODB_URI, 'kache-dev');
 
 /**
@@ -9,4 +9,15 @@ MongoAdapter.build(Config.MONGODB_URI, 'kache-dev');
  */
 class BaseController {}
 
-export { BaseController };
+function createJson(res: Response, status: number = 200, message?: string, payload?: any) {
+  res.json({
+             status: status,
+             message: message,
+             payload: payload
+           });
+}
+
+export {
+  BaseController,
+  createJson
+};
