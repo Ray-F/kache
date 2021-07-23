@@ -1,17 +1,7 @@
 import { MongoAdapter } from './MongoAdapter';
-import { Collection } from 'mongodb';
+import { Collection, ObjectId } from 'mongodb';
 import Config from '../util/Config';
-
-interface Wallet {
-  type: string,
-  address: string,
-}
-
-interface User {
-  id: string,
-  name: string,
-  wallets: Wallet[]
-}
+import { User } from '../model/User';
 
 class UserRepository {
   private userCollection: Collection;
@@ -20,29 +10,49 @@ class UserRepository {
     this.userCollection = mongoAdapter.db.collection('users');
   }
 
+  /**
+   * Returns a list of all Users.
+   */
   public async list(): Promise<User[]> {
-    // TODO: Replace this with a proper user
-    return [{
-      id: "abc",
-      name: "Mock User",
-      wallets: [
-        {
-          type: "ETHEREUM",
-          address: Config.DEFAULT_WALLET_ADDRESS,
-        }
-      ]
-    }]
-    // const dboList = await this.userCollection.find({}).toArray();
-    //
-    // return dboList.map((dbo) => ({
-    //   id: dbo["_id"],
-    //   name: dbo["name"],
-    //   wallets: dbo["wallets"],
-    // }));
+    const dboList = await this.userCollection.find({}).toArray();
+
+    return dboList.map((dbo) => mapDboToUser(dbo));
   }
 
   /**
-   * Returns a list of Ethereum addresses that require monitoring (i.e. transaction tracking).
+   * Returns the User` associated with a crypto `walletAddress` or `null` if none were found.
+   */
+  public async getUserByAddress(walletAddress: string): Promise<User> {
+    const dbo = await this.userCollection.findOne({ "wallets.address": walletAddress });
+
+    return dbo ? mapDboToUser(dbo) : null;
+  }
+
+  /**
+   * Returns the User with the corresponding `userId` or `null` if none were found.
+   */
+  public async getUserById(userId: string): Promise<User> {
+    const dbo = await this.userCollection.findOne({ _id: new ObjectId(userId) });
+    return dbo ? mapDboToUser(dbo) : null;
+  }
+
+  /**
+   * Saves a `user` to the DB or updates an existing one.
+   */
+  public async save(user: User): Promise<User> {
+    const dboToSave = {
+      _id: user.id ? new ObjectId(user.id) : new ObjectId(),
+      name: user.name,
+      wallets: user.wallets
+    }
+
+    await this.userCollection.updateOne({ _id: dboToSave._id }, { $set: dboToSave }, { upsert: true })
+
+    return mapDboToUser(dboToSave);
+  }
+
+  /**
+   * Returns a list of ethereum addresses belonging to all users.
    */
   public async listEthereumAddressesToMonitor(): Promise<string[]> {
     // TODO: Do some filtering logic to filter for users with an ethereum wallet and map addresses
@@ -52,8 +62,15 @@ class UserRepository {
 
 }
 
+function mapDboToUser(dbo: Object): User {
+  return {
+    id: String(dbo["_id"]),
+    name: dbo["name"],
+    wallets: dbo["wallets"]
+  }
+}
+
 export {
-  User,
-  Wallet,
+  mapDboToUser,
   UserRepository,
 }
