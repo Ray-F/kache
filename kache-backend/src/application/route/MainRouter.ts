@@ -16,6 +16,7 @@ const actionRouter = Router();
 router.use('/api/action', actionRouter);
 
 actionRouter.use('/query-blockchain-payments', actionController.runPaymentCheck);
+actionRouter.use('/exchange', actionController.getCurrentExchange);
 
 router.use('/api', defaultController.api404);
 
