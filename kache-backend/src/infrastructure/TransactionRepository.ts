@@ -32,6 +32,15 @@ class TransactionRepository {
   }
 
   /**
+   * Returns the UserTransaction associated with `transactionId` or `null` if it does not exist.
+   */
+  async getTransactionById(transactionId: string): Promise<UserTransaction> {
+    const dbo = await this.transactionCollection.findOne({ _id: new ObjectId(transactionId) })
+
+    return dbo ? mapDboToTransaction(dbo) : null;
+  }
+
+  /**
    * Saves a `transaction` to the DB.
    */
   async save(transaction: UserTransaction): Promise<UserTransaction> {
