@@ -5,5 +5,5 @@ function weiToEther(wei): number {
 }
 
 export {
-  weiToEther
-}
+  weiToEther,
+};

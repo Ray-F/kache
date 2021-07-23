@@ -7,5 +7,5 @@ interface CryptoTransaction {
 }
 
 export {
-  CryptoTransaction
-}
+  CryptoTransaction,
+};

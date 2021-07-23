@@ -17,5 +17,5 @@ interface User {
 
 export {
   Wallet,
-  User
-}
+  User,
+};

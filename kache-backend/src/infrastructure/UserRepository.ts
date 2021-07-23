@@ -20,10 +20,10 @@ class UserRepository {
   }
 
   /**
-   * Returns the User` associated with a crypto `walletAddress` or `null` if none were found.
+   * Returns the `User` associated with a crypto `walletAddress` or `null` if none were found.
    */
   public async getUserByAddress(walletAddress: string): Promise<User> {
-    const dbo = await this.userCollection.findOne({ "wallets.address": walletAddress });
+    const dbo = await this.userCollection.findOne({ 'wallets.address': walletAddress });
 
     return dbo ? mapDboToUser(dbo) : null;
   }
@@ -43,10 +43,10 @@ class UserRepository {
     const dboToSave = {
       _id: user.id ? new ObjectId(user.id) : new ObjectId(),
       name: user.name,
-      wallets: user.wallets
-    }
+      wallets: user.wallets,
+    };
 
-    await this.userCollection.updateOne({ _id: dboToSave._id }, { $set: dboToSave }, { upsert: true })
+    await this.userCollection.updateOne({ _id: dboToSave._id }, { $set: dboToSave }, { upsert: true });
 
     return mapDboToUser(dboToSave);
   }
@@ -62,13 +62,13 @@ class UserRepository {
 
 function mapDboToUser(dbo: Object): User {
   return {
-    id: String(dbo["_id"]),
-    name: dbo["name"],
-    wallets: dbo["wallets"]
-  }
+    id: String(dbo['_id']),
+    name: dbo['name'],
+    wallets: dbo['wallets'],
+  };
 }
 
 export {
   mapDboToUser,
   UserRepository,
-}
+};

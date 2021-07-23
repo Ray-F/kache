@@ -2,8 +2,8 @@ import { BlockTag, EtherscanProvider, JsonRpcProvider } from '@ethersproject/pro
 import { ethers, utils } from 'ethers';
 import { logger } from '../util/Logger';
 
-const MAINNET_NETWORK = "mainnet";
-const TEST_NETWORK = "ropsten";
+const MAINNET_NETWORK = 'mainnet';
+const TEST_NETWORK = 'ropsten';
 
 class EtherService {
   private provider: JsonRpcProvider;
@@ -14,8 +14,8 @@ class EtherService {
     this.scanProvider = new ethers.providers.EtherscanProvider(TEST_NETWORK, etherScanApiKey);
 
     this.provider.getBlockNumber().then((result) => {
-      logger.logInfo(`Connected to Ethereum Node: ${result}`)
-    })
+      logger.logInfo(`Connected to Ethereum Node: ${result}`);
+    });
   }
 
   /**
@@ -45,5 +45,5 @@ class EtherService {
 }
 
 export {
-  EtherService
-}
+  EtherService,
+};

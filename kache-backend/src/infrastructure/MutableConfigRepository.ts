@@ -7,7 +7,7 @@ class MutableConfigRepository {
   private configCollection: Collection;
 
   constructor(mongoAdapter: MongoAdapter) {
-    this.configCollection = mongoAdapter.db.collection("config");
+    this.configCollection = mongoAdapter.db.collection('config');
   }
 
   /**
@@ -17,7 +17,7 @@ class MutableConfigRepository {
   public async getLastBlockRead(): Promise<BlockTag> {
     const singletonConfig = await this.configCollection.findOne({});
 
-    return singletonConfig["lastBlockRead"] as BlockTag;
+    return singletonConfig['lastBlockRead'] as BlockTag;
   }
 
   /**
@@ -27,14 +27,14 @@ class MutableConfigRepository {
    */
   public async setLatestBlockRead(block: BlockTag) {
     const update = {
-      "$set" : {
-        "lastBlockRead": block as number
-      }
-    }
-    await this.configCollection.updateOne({}, update)
+      '$set': {
+        'lastBlockRead': block as number,
+      },
+    };
+    await this.configCollection.updateOne({}, update);
   }
 }
 
 export {
-  MutableConfigRepository
-}
+  MutableConfigRepository,
+};

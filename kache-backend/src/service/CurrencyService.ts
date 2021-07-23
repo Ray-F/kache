@@ -13,10 +13,10 @@ const ENDPOINT_URL = 'http://api.coinlayer.com';
 
 class CurrencyService {
 
-  private readonly keyQuery: string
+  private readonly keyQuery: string;
 
   constructor(accessKey: string) {
-    this.keyQuery = `?access_key=${accessKey}`
+    this.keyQuery = `?access_key=${accessKey}`;
   }
 
   /**
@@ -24,7 +24,7 @@ class CurrencyService {
    */
   async cryptoToNzd(cryptoType: CryptoType, date: Date = null) {
     if (cryptoType !== CryptoType.ETHER) {
-      throw new Error("Not implemented yet")
+      throw new Error('Not implemented yet');
     }
 
     return date ? await this.getHistoricExchangeRate(date) : await this.getLiveExchangeRate();
@@ -58,5 +58,5 @@ class CurrencyService {
 
 export {
   CryptoType,
-  CurrencyService
-}
+  CurrencyService,
+};

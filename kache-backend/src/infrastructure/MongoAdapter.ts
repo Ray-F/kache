@@ -68,7 +68,7 @@ class MongoAdapter {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    return true
+    return true;
   }
 }
 

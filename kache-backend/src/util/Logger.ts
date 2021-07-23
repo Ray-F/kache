@@ -9,7 +9,7 @@ class Logger {
 
   logError(message?: string) {
     console.error(
-      Logger.generateLogString(message || 'An unknown error occurred')
+      Logger.generateLogString(message || 'An unknown error occurred'),
     );
   }
 

@@ -6,5 +6,5 @@ function padNumber(number: number, maxLength: number, character: string) {
 }
 
 export {
-  padNumber
-}
+  padNumber,
+};

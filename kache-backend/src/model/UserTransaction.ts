@@ -8,5 +8,5 @@ interface UserTransaction {
 }
 
 export {
-  UserTransaction
-}
+  UserTransaction,
+};

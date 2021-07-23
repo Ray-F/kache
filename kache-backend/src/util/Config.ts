@@ -8,7 +8,7 @@ const {
   MONGODB_URI,
   ETH_NODE_URL,
   ETHERSCAN_API_KEY,
-  COINLAYER_ACCESS_KEY
+  COINLAYER_ACCESS_KEY,
 } = process.env;
 
 /*
