@@ -40,9 +40,9 @@ class ActionController extends BaseController {
     const exchangeRate = await currencyService.cryptoToNzd(CryptoType.ETHER);
 
     const payload = {
-      exchangeRate: precisionRound(exchangeRate, 4),
+      exchangeRate: precisionRound(exchangeRate, 5),
       ...(amountNzd && { amountNzd: precisionRound(amountNzd, 2) }),
-      ...(amountNzd && { amountCrypto: precisionRound(amountNzd / exchangeRate, 2) }),
+      ...(amountNzd && { amountCrypto: precisionRound(amountNzd / exchangeRate, 5) }),
     };
 
     createJson(res, 200, null, payload);
