@@ -27,7 +27,6 @@ class TransactionRepository {
     ];
 
     const dboList = await this.transactionCollection.aggregate(pipeline).toArray();
-
     return dboList.map((dbo) => mapDboToTransaction(dbo));
   }
 
@@ -65,7 +64,7 @@ class TransactionRepository {
 function mapDboToTransaction(dbo: object): UserTransaction {
   return {
     id: String(dbo['_id']),
-    user: mapDboToUser(dbo['user']),
+    user: dbo['user'][0] ? mapDboToUser(dbo['user'][0]) : null,
     cryptoTransaction: dbo['cryptoTransaction'],
   };
 }
