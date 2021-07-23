@@ -55,9 +55,7 @@ class UserRepository {
    * Returns a list of ethereum addresses belonging to all users.
    */
   public async listEthereumAddressesToMonitor(): Promise<string[]> {
-    // TODO: Do some filtering logic to filter for users with an ethereum wallet and map addresses
-
-    return [Config.DEFAULT_WALLET_ADDRESS]
+    return (await this.list()).flatMap((user) => user.wallets.flatMap((wallet) => wallet.address));
   }
 
 }
