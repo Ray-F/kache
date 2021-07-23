@@ -12,12 +12,12 @@ class BaseController {}
 function createJson(res: Response, status: number = 200, message?: string, payload?: any) {
   res.json({
              status: status,
-             message: message,
-             payload: payload
+             ...(message && { message }),
+             ...(payload && { payload }),
            });
 }
 
 export {
   BaseController,
-  createJson
+  createJson,
 };
