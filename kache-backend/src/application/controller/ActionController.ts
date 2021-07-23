@@ -7,6 +7,7 @@ import { CurrencyService } from '../../service/CurrencyService';
 import Config from '../../util/Config';
 import { EtherService } from '../../service/EtherService';
 import { BaseController, createJson } from './BaseController';
+import { TransactionRepository } from '../../infrastructure/TransactionRepository';
 
 class ActionController extends BaseController {
 
@@ -19,10 +20,11 @@ class ActionController extends BaseController {
 
     const mutableConfigRepo = new MutableConfigRepository(mongoAdapter);
     const userRepo = new UserRepository(mongoAdapter);
+    const transactionRepo = new TransactionRepository(mongoAdapter);
 
     const currencyService = new CurrencyService(Config.COINLAYER_ACCESS_KEY);
 
-    const transactionsProcessed = await processPaymentsReceived(currencyService, etherService, userRepo, mutableConfigRepo);
+    const transactionsProcessed = await processPaymentsReceived(currencyService, etherService, userRepo, mutableConfigRepo, transactionRepo);
 
     createJson(res,
                200,

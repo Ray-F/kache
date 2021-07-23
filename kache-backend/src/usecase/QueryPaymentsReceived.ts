@@ -28,38 +28,26 @@ async function processPaymentsReceived(currencyService: CurrencyService,
     // List of crypto transactions made during the last block read time and now for the current address
     const transactions: CryptoTransaction[] = await Promise.all(queryResp.map(async (raw) => {
       // Timestamp given is in seconds, whereas date uses milliseconds
-      const dateOfTransaction = new Date(raw["timestamp"] * 1000);
+      const dateOfTransaction = new Date(raw['timestamp'] * 1000);
 
       const exchangeRate = await currencyService.cryptoToNzd(CryptoType.ETHER, dateOfTransaction);
 
-      const amountNzd = exchangeRate * weiToEther(raw["value"]);
-      const feeNzd = exchangeRate * weiToEther(raw["gasPrice"]);
+      const amountNzd = exchangeRate * weiToEther(raw['value']);
+      const feeNzd = exchangeRate * weiToEther(raw['gasPrice']);
 
       return {
-        addressFrom: raw["from"],
-        addressTo: raw["to"],
+        addressFrom: raw['from'],
+        addressTo: raw['to'],
         amountNzd: amountNzd,
         feeNzd: feeNzd,
         timestamp: dateOfTransaction.valueOf(),
-      }
+      };
     }));
 
     // Add all current transactions for this address to all transactions, to be returned
     allTransactions.push.apply(allTransactions, transactions);
 
-    if (transactions.length > 0) {
-      const user = await userRepo.getUserByAddress(address);
-      // TODO: Check user for null safety
-
-      for (const transaction of transactions) {
-        const newUserTransaction: UserTransaction = {
-          user: user,
-          cryptoTransaction: transaction
-        }
-
-        await transactionRepo.save(newUserTransaction);
-      }
-    }
+    await saveTransactionsToDb(transactionRepo, userRepo, transactions);
 
     // TODO: Do something with these "bank" transactions by adding them to the MYOB dashboard
     console.log(transactions);
@@ -71,6 +59,30 @@ async function processPaymentsReceived(currencyService: CurrencyService,
   return allTransactions;
 }
 
-export {
-  processPaymentsReceived
+/**
+ * Saves a list of `transactions` to the DB.
+ */
+async function saveTransactionsToDb(transactionRepo: TransactionRepository,
+                                    userRepo: UserRepository,
+                                    transactions: CryptoTransaction[]) {
+  const address = transactions[0]?.addressTo;
+
+  if (address) {
+    const user = await userRepo.getUserByAddress(address);
+
+    if (!user) throw Error('Cannot link transaction with user!');
+
+    for (const transaction of transactions) {
+      const newUserTransaction: UserTransaction = {
+        user: user,
+        cryptoTransaction: transaction,
+      };
+
+      await transactionRepo.save(newUserTransaction);
+    }
+  }
 }
+
+export {
+  processPaymentsReceived,
+};
