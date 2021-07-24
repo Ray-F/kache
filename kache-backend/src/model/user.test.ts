@@ -4,6 +4,8 @@ import { User } from './User';
 import { UserRepository } from '../infrastructure/UserRepository';
 import { TransactionRepository } from '../infrastructure/TransactionRepository';
 import { UserTransaction } from './UserTransaction';
+import { MyobService } from '../service/MyobService';
+import { MyobInvoiceRepository } from '../infrastructure/MyobInvoiceRepository';
 
 const mongoAdapter = MongoAdapter.build(Config.MONGODB_URI, 'kache-dev');
 
@@ -15,6 +17,7 @@ test.skip('Create user and save', async () => {
   const userRepo = new UserRepository(mongoAdapter);
 
   const user: User = {
+    email: 'rf.raymondfeng@gmail.com',
     name: 'Raymond Feng',
     wallets: [{
       type: 'ETHEREUM',
@@ -56,4 +59,18 @@ test('Get all addresses', async () => {
 test('Get all transactions from DB and print', async () => {
   const transactionRepo = new TransactionRepository(mongoAdapter);
   console.log(JSON.stringify(await transactionRepo.list(), null, '\t'));
+});
+
+test('Get company files', async () => {
+  const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
+
+  const userRepo = new UserRepository(mongoAdapter);
+  const user = (await userRepo.list())[0];
+
+  const tokens = await myobService.refreshAccessToken(user.myobRefreshToken);
+  user.myobRefreshToken = tokens.refresh_token;
+  await userRepo.save(user);
+
+  const myobInvoiceRepo = new MyobInvoiceRepository(myobService, 'ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
+  console.log(await myobInvoiceRepo.list());
 });
