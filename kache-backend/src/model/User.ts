@@ -11,8 +11,12 @@ interface Wallet {
  */
 interface User {
   id?: string,
+  myobId?: string,
+  email: string,
   name: string,
-  wallets: Wallet[]
+  wallets: Wallet[],
+
+  myobRefreshToken?: string,
 }
 
 export {

@@ -29,7 +29,16 @@ class UserRepository {
   }
 
   /**
-   * Returns the User with the corresponding `userId` or `null` if none were found.
+   * Returns the `User` associated with an `myobId` or `null` if none were found.
+   */
+  public async getUserByMyobId(myobId: string): Promise<User> {
+    const dbo = await this.userCollection.findOne({ 'myobId': myobId });
+
+    return dbo ? mapDboToUser(dbo) : null;
+  }
+
+  /**
+   * Returns the `User` with the corresponding `userId` or `null` if none were found.
    */
   public async getUserById(userId: string): Promise<User> {
     const dbo = await this.userCollection.findOne({ _id: new ObjectId(userId) });
@@ -44,6 +53,9 @@ class UserRepository {
       _id: user.id ? new ObjectId(user.id) : new ObjectId(),
       name: user.name,
       wallets: user.wallets,
+      email: user.email,
+      myobId: user.myobId,
+      myobRefreshToken: user.myobRefreshToken,
     };
 
     await this.userCollection.updateOne({ _id: dboToSave._id }, { $set: dboToSave }, { upsert: true });
@@ -64,7 +76,10 @@ function mapDboToUser(dbo: Object): User {
   return {
     id: String(dbo['_id']),
     name: dbo['name'],
+    email: dbo['email'],
     wallets: dbo['wallets'],
+    ...(dbo['myobId'] && {myobId: dbo['myobId']}),
+    ...(dbo['myobRefreshToken'] && {myobRefreshToken: dbo['myobRefreshToken']})
   };
 }
 
