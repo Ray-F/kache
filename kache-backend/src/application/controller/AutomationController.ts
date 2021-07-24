@@ -3,14 +3,13 @@ import { MongoAdapter } from '../../infrastructure/MongoAdapter';
 import { MutableConfigRepository } from '../../infrastructure/MutableConfigRepository';
 import { UserRepository } from '../../infrastructure/UserRepository';
 import { processPaymentsReceived } from '../../usecase/QueryPaymentsReceived';
-import { CryptoType, CurrencyService } from '../../service/CurrencyService';
+import { CurrencyService } from '../../service/CurrencyService';
 import Config from '../../util/Config';
 import { EtherService } from '../../service/EtherService';
 import { BaseController, createJson } from './BaseController';
 import { TransactionRepository } from '../../infrastructure/TransactionRepository';
-import { precisionRound } from '../../util/NumberUtil';
 
-class ActionController extends BaseController {
+class AutomationController extends BaseController {
 
   public async runPaymentCheck(req: Request, res: Response) {
     const mongoAdapter = MongoAdapter.getInstance();
@@ -33,22 +32,8 @@ class ActionController extends BaseController {
                transactionsProcessed);
   }
 
-  public async getCurrentExchange(req: Request, res: Response) {
-    const amountNzd = req.query['amountNzd'] ? parseFloat(req.query['amountNzd'].toString()) : undefined;
-
-    const currencyService = new CurrencyService(Config.COINLAYER_ACCESS_KEY);
-    const exchangeRate = await currencyService.cryptoToNzd(CryptoType.ETHER);
-
-    const payload = {
-      exchangeRate: precisionRound(exchangeRate, 5),
-      ...(amountNzd && { amountNzd: precisionRound(amountNzd, 2) }),
-      ...(amountNzd && { amountCrypto: precisionRound(amountNzd / exchangeRate, 5) }),
-    };
-
-    createJson(res, 200, null, payload);
-  }
 }
 
 export {
-  ActionController,
+  AutomationController,
 };

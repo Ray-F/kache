@@ -21,14 +21,14 @@ functions:
     description: Queries payments on the blockchain and links them to MYOB asset accounts
     handler: dist/lambda.handler
     events:
-      - http: GET /api/action/query-blockchain-payments
+      - http: GET /api/automation/query-blockchain-payments
 
   exchange:
     name: CurrencyExchange
     description: Converts an NZD value to an ethereum value (or just exchange rate)
     handler: dist/lambda.handler
     events:
-      - http: GET /api/action/exchange
+      - http: GET /api/client/exchange
 
 plugins:
   - serverless-offline
