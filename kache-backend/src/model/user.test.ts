@@ -6,8 +6,6 @@ import { TransactionRepository } from '../infrastructure/TransactionRepository';
 import { UserTransaction } from './UserTransaction';
 import { MyobService } from '../service/MyobService';
 import { MyobInvoiceRepository } from '../infrastructure/MyobInvoiceRepository';
-import { onboardNewUser } from '../usecase/UserOnboarding';
-import { MyobLedgerRepository } from '../infrastructure/MyobLedgerRepository';
 
 const mongoAdapter = MongoAdapter.build(Config.MONGODB_URI, 'kache-dev');
 
@@ -15,12 +13,13 @@ beforeEach(async () => {
   await mongoAdapter.isConnected();
 });
 
-test.skip('Create user and save', async () => {
+test.skip('Onboard new user', async () => {
   const userRepo = new UserRepository(mongoAdapter);
 
   const user: User = {
     email: 'rf.raymondfeng@gmail.com',
     name: 'Raymond Feng',
+    companyFileMyobId: 'ec8619d9-bb20-4aae-9bbf-1e0e508bb58a',
     wallets: [{
       type: 'ETHEREUM',
       address: Config.DEFAULT_WALLET_ADDRESS,
@@ -77,20 +76,3 @@ test('Get invoices made by a company', async () => {
   const myobInvoiceRepo = new MyobInvoiceRepository(myobService, userCfUri);
   console.log(await myobInvoiceRepo.list());
 });
-
-
-test('Generate new asset account', async () => {
-  const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
-
-  const userRepo = new UserRepository(mongoAdapter);
-  const user = (await userRepo.list())[0];
-
-  const tokens = await myobService.refreshAccessToken(user.myobRefreshToken);
-  user.myobRefreshToken = tokens.refresh_token;
-  await userRepo.save(user);
-
-  const userCfUri = await myobService.getCFUriFromCFId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
-  const myobLedgerRepo = new MyobLedgerRepository(myobService, userCfUri);
-
-  await onboardNewUser(userRepo, myobLedgerRepo, user);
-}, 30_000);
