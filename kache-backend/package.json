@@ -11,7 +11,7 @@
     "prebuild": "yarn run clean",
     "build": "babel src -d dist --extensions .ts,.js",
     "prestart": "yarn run build",
-    "start": "isLocal=true NODE_ENV=dev sls offline start --httpPort 9002",
+    "start": "sls offline start --httpPort 9002",
     "predeploy": "yarn run prestart",
     "deploy": "sls deploy"
   },
@@ -71,12 +71,8 @@
     "plugins": [
       "babel-plugin-add-module-exports",
       "@babel/plugin-transform-typescript",
-      [
-        "@babel/plugin-proposal-class-properties",
-        {
-          "loose": true
-        }
-      ]
+      ["@babel/plugin-proposal-class-properties", { "loose": true }],
+      ["@babel/plugin-proposal-private-methods", { "loose": true }]
     ]
   }
 }
