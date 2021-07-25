@@ -37,11 +37,13 @@ class ClientController extends BaseController {
     const name = req.body.name;
     const email = req.body.email;
     const wallets = req.body.wallets;
+    const companyFileMyobId = req.body.companyFileMyobId;
 
     const user: User = {
       name,
       email,
       wallets,
+      companyFileMyobId,
     };
 
     const mongoAdapter = MongoAdapter.getInstance();
@@ -90,9 +92,10 @@ class ClientController extends BaseController {
       return;
     }
 
+    // TODO: 'ec8619d9-bb20-4aae-9bbf-1e0e508bb58a'
     // If user is not set, then onboard the user
     // TODO: Change to get CompanyFile from user first.
-    const cfUri = await myobService.getCFUriFromCFId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
+    const cfUri = await myobService.getCFUriFromCFId(user.companyFileMyobId);
     const myobLedgerRepo = new MyobLedgerRepository(myobService, cfUri);
     await onboardNewUser(userRepo, myobLedgerRepo, user);
 

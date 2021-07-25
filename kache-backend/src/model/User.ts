@@ -12,10 +12,12 @@ interface Wallet {
 interface User {
   id?: string,
   myobId?: string,
+
   email: string,
   name: string,
   wallets: Wallet[],
 
+  companyFileMyobId: string,
   kacheAssetAccountMyobId?: string,
   myobRefreshToken?: string,
 }
