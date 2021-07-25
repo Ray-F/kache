@@ -84,7 +84,7 @@ class ClientController extends BaseController {
 
     await userRepo.save(user);
 
-    logger.logInfo(`Onboarding new user "${user.name} - ${user.email}:"`);
+    logger.logInfo(`Onboarding new user "${user.name} - ${user.email}":`);
 
     // If this is set, this means the user has already been onboarded
     if (user.kacheAssetAccountMyobId) {
