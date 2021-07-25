@@ -46,12 +46,13 @@ class ClientController extends BaseController {
 
     const mongoAdapter = MongoAdapter.getInstance();
     await mongoAdapter.isConnected();
+    const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
 
     const userRepo = new UserRepository(mongoAdapter);
     const newUser = await userRepo.save(user);
 
     createJson(res, 201, `Successfully created new user "${name}!"`, {
-      userId: newUser.id,
+      myobOAuthRedirect: myobService.generateOAuthLink(newUser.id),
     });
   }
 

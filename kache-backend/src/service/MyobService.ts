@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import { URLSearchParams } from 'url';
 
+const MYOB_OAUTH_URL = 'https://secure.myob.com/oauth2/account/authorize';
 const MYOB_AUTHORISE_URL = 'https://secure.myob.com/oauth2/v1/authorize';
 const REDIRECT_URL = 'http://localhost:9002/api/client/myob_callback';
 
@@ -64,6 +65,15 @@ class MyobService {
       access_token: this.accessToken,
       refresh_token: newRefreshToken,
     };
+  }
+
+  /**
+   * Returns the OAuth 2.0 link that a user needs to be redirected to in order to link their MYOB account with their
+   * kache account (determined by `userId`).
+   */
+  generateOAuthLink(userId: string): string {
+    const urlEncoded = encodeURIComponent(REDIRECT_URL);
+    return `${MYOB_OAUTH_URL}?client_id=${this.publicKey}&redirect_uri=${urlEncoded}&response_type=code&scope=CompanyFile&state=${userId}`;
   }
 
   /**
