@@ -34,17 +34,15 @@ class ClientController extends BaseController {
       return;
     }
 
-    const name = req.body.name;
-    const email = req.body.email;
-    const wallets = req.body.wallets;
-    const companyFileMyobId = req.body.companyFileMyobId;
+    const { name, email, wallets, companyFileMyobId } = req.body;
 
-    const user: User = {
-      name,
-      email,
-      wallets,
-      companyFileMyobId,
-    };
+    // If one of the parameters is empty, respond with failure
+    if (!(name && email && wallets && companyFileMyobId)) {
+      createJson(res, 400, 'One of the required parameters is missing!');
+      return;
+    }
+
+    const user: User = { name, email, wallets, companyFileMyobId };
 
     const mongoAdapter = MongoAdapter.getInstance();
     await mongoAdapter.isConnected();
@@ -75,8 +73,10 @@ class ClientController extends BaseController {
 
     let user = await userRepo.getUserById(userId);
 
+    // Fail link if user object was not in the DB.
     if (!user) {
-      createJson(res, 500, "Could not link MYOB user as the old user account could not be found");
+      createJson(res, 500, 'Could not link MYOB user as the old user account could not be found');
+      return;
     }
 
     user.myobId = token.user.uid;
@@ -92,14 +92,13 @@ class ClientController extends BaseController {
       return;
     }
 
-    // TODO: 'ec8619d9-bb20-4aae-9bbf-1e0e508bb58a'
     // If user is not set, then onboard the user
     // TODO: Change to get CompanyFile from user first.
     const cfUri = await myobService.getCFUriFromCFId(user.companyFileMyobId);
     const myobLedgerRepo = new MyobLedgerRepository(myobService, cfUri);
     await onboardNewUser(userRepo, myobLedgerRepo, user);
 
-    logger.logInfo(`Finished onboarding new user "${user.name} - ${user.email}"!`)
+    logger.logInfo(`Finished onboarding new user "${user.name} - ${user.email}"!`);
 
     // Return response to client once entire process is complete
     res.sendStatus(200);
