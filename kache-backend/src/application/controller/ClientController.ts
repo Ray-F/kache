@@ -6,9 +6,9 @@ import { precisionRound } from '../../util/NumberUtil';
 import { MyobService } from '../../service/MyobService';
 import { MongoAdapter } from '../../infrastructure/MongoAdapter';
 import { UserRepository } from '../../infrastructure/UserRepository';
-import { User } from '../../model/User';
 import { onboardNewUser } from '../../usecase/UserOnboarding';
 import { MyobLedgerRepository } from '../../infrastructure/MyobLedgerRepository';
+import { logger } from '../../util/Logger';
 
 class ClientController extends BaseController {
 
@@ -32,6 +32,9 @@ class ClientController extends BaseController {
    */
   public async myobCodeCallback(req: Request, res: Response) {
     const accessCode = String(req.query.code);
+
+    const userId = String(req.query.state);
+
     const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
 
     const mongoAdapter = MongoAdapter.getInstance();
@@ -39,30 +42,40 @@ class ClientController extends BaseController {
 
     const token = await myobService.generateTokens(accessCode);
 
-    // Save the MYOB refresh token to the user for future code execution
     const userRepo = new UserRepository(mongoAdapter);
-    const user = await userRepo.getUserByMyobId(token.user.uid);
 
-    // If user by this MYOB account exists, save the refresh token to it. Otherwise, create a new user
+    let user = await userRepo.getUserById(userId)
+
+    // If user by this MYOB account exists, save the refresh token to it
     if (user) {
+      user.myobId = token.user.uid;
       user.myobRefreshToken = token.refresh_token;
-      await userRepo.save(user);
-    }
+    } else {
+      logger.logWarn(`Creating new user "${token.user.username} - ${token.user.uid}" because old one could not be found. May need to link these user accounts.`)
 
-    const newUser: User = {
-      name: token.user.username,
-      email: token.user.username,
-      wallets: [],
-
-      myobId: token.user.uid,
-      myobRefreshToken: token.refresh_token,
+      user = {
+        email: token.user.username,
+        name: token.user.username,
+        wallets: [],
+        myobId: token.user.uid,
+        myobRefreshToken: token.refresh_token,
+      };
     }
 
     await userRepo.save(user);
 
-    const cfUri = await myobService.getCFUriFromId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
-    const myobCrmRepo =
-    const myobLedgerRepo = new MyobLedgerRepository(myobService, cfUri)
+    logger.logInfo(`Onboarding new user "${user.name} - ${user.email}..."`);
+
+    // If this is set, this means the user has already been onboarded
+    if (user.kacheAssetAccountMyobId) {
+      logger.logInfo(`Skipping user "${user.name} - ${user.email}" as they already have a linked asset account`);
+      res.sendStatus(200);
+      return;
+    }
+
+    // If user is not set, then onboard the user
+    const cfUri = await myobService.getCFUriFromCFId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
+    const myobLedgerRepo = new MyobLedgerRepository(myobService, cfUri);
     await onboardNewUser(userRepo, myobLedgerRepo, user);
 
     res.sendStatus(200);
@@ -71,5 +84,5 @@ class ClientController extends BaseController {
 }
 
 export {
-  ClientController
-}
+  ClientController,
+};
