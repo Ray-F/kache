@@ -100,6 +100,7 @@ class ClientController extends BaseController {
     }
 
     // If user is not set, then onboard the user
+    // TODO: Change to get CompanyFile from user first.
     const cfUri = await myobService.getCFUriFromCFId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
     const myobLedgerRepo = new MyobLedgerRepository(myobService, cfUri);
     await onboardNewUser(userRepo, myobLedgerRepo, user);
