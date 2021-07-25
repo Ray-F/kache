@@ -15,12 +15,14 @@ const defaultController = new DefaultController();
 const automationController = new AutomationController();
 const automationRouter = Router();
 router.use('/api/automation', automationRouter);
+
 automationRouter.use('/query-blockchain-payments', automationController.runPaymentCheck);
 
 // Client controller and routes for our frontend
 const clientController = new ClientController();
 const clientRouter = Router();
 router.use('/api/client', clientRouter);
+
 clientRouter.use('/onboard-unlinked', clientController.createNewUnlinkedUser);
 clientRouter.use('/myob-callback', clientController.linkUserOnMyob);
 clientRouter.use('/exchange', clientController.getCurrentExchange);
