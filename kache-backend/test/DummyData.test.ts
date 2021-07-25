@@ -1,11 +1,11 @@
-import { MongoAdapter } from '../infrastructure/MongoAdapter';
-import Config from '../util/Config';
-import { User } from './User';
-import { UserRepository } from '../infrastructure/UserRepository';
-import { TransactionRepository } from '../infrastructure/TransactionRepository';
-import { UserTransaction } from './UserTransaction';
-import { MyobService } from '../service/MyobService';
-import { MyobInvoiceRepository } from '../infrastructure/MyobInvoiceRepository';
+import { MongoAdapter } from '../src/infrastructure/MongoAdapter';
+import Config from '../src/util/Config';
+import { User } from '../src/model/User';
+import { UserRepository } from '../src/infrastructure/UserRepository';
+import { TransactionRepository } from '../src/infrastructure/TransactionRepository';
+import { UserTransaction } from '../src/model/UserTransaction';
+import { MyobService } from '../src/service/MyobService';
+import { MyobInvoiceRepository } from '../src/infrastructure/MyobInvoiceRepository';
 
 const mongoAdapter = MongoAdapter.build(Config.MONGODB_URI, 'kache-dev');
 
