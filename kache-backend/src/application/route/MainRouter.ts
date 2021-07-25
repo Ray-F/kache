@@ -21,7 +21,8 @@ automationRouter.use('/query-blockchain-payments', automationController.runPayme
 const clientController = new ClientController();
 const clientRouter = Router();
 router.use('/api/client', clientRouter);
-clientRouter.use('/myob_callback', clientController.myobCodeCallback);
+clientRouter.use('/onboard-unlinked', clientController.createNewUnlinkedUser);
+clientRouter.use('/myob_callback', clientController.linkUserOnMyob);
 clientRouter.use('/exchange', clientController.getCurrentExchange);
 
 router.use('/api', defaultController.api404);

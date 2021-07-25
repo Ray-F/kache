@@ -32,6 +32,13 @@ functions:
     events:
       - http: GET /api/client/exchange
 
+  onboard-unlinked:
+    name: OnboardUnlinked
+    description: Creates a new user on our DB that is not linked with MYOB
+    handler: dist/lambda.handler
+    events:
+      - http: POST /api/client/onboard-unlinked
+
   myob-auth-callback:
     name: MyobAuthentication
     description: Callback handler for MYOB OAuth
