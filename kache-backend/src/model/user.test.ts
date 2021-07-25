@@ -63,7 +63,7 @@ test('Get all transactions from DB and print', async () => {
   console.log(JSON.stringify(await transactionRepo.list(), null, '\t'));
 });
 
-test('Get company files', async () => {
+test('Get invoices made by a company', async () => {
   const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
 
   const userRepo = new UserRepository(mongoAdapter);
@@ -73,7 +73,7 @@ test('Get company files', async () => {
   user.myobRefreshToken = tokens.refresh_token;
   await userRepo.save(user);
 
-  const userCfUri = await myobService.getCFUriFromId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
+  const userCfUri = await myobService.getCFUriFromCFId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
   const myobInvoiceRepo = new MyobInvoiceRepository(myobService, userCfUri);
   console.log(await myobInvoiceRepo.list());
 });
@@ -89,7 +89,7 @@ test('Generate new asset account', async () => {
   user.myobRefreshToken = tokens.refresh_token;
   await userRepo.save(user);
 
-  const userCfUri = await myobService.getCFUriFromId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
+  const userCfUri = await myobService.getCFUriFromCFId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
   const myobLedgerRepo = new MyobLedgerRepository(myobService, userCfUri);
 
   await onboardNewUser(userRepo, myobLedgerRepo, user);
