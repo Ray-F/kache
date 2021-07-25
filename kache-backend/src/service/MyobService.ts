@@ -3,9 +3,11 @@ import { URLSearchParams } from 'url';
 
 const MYOB_OAUTH_URL = 'https://secure.myob.com/oauth2/account/authorize';
 const MYOB_AUTHORISE_URL = 'https://secure.myob.com/oauth2/v1/authorize';
+const AR_BASE_URL = 'https://api.myob.com/accountright';
+
+// TODO: Change redirect URL to www.kache.app/myob-onboarding after finished with front end services
 const REDIRECT_URL = 'http://localhost:9002/dev/api/client/myob-callback';
 
-const AR_BASE_URL = 'https://api.myob.com/accountright';
 
 type GeneratedToken = {
   access_token: string,
