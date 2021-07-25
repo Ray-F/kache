@@ -73,21 +73,12 @@ class ClientController extends BaseController {
 
     let user = await userRepo.getUserById(userId);
 
-    // If user by this MYOB account exists, save the refresh token to it
-    if (user) {
-      user.myobId = token.user.uid;
-      user.myobRefreshToken = token.refresh_token;
-    } else {
-      logger.logWarn(`Creating new user "${token.user.username} - ${token.user.uid}" because old one could not be found. May need to link these user accounts.`);
-
-      user = {
-        email: token.user.username,
-        name: token.user.username,
-        wallets: [],
-        myobId: token.user.uid,
-        myobRefreshToken: token.refresh_token,
-      };
+    if (!user) {
+      createJson(res, 500, "Could not link MYOB user as the old user account could not be found");
     }
+
+    user.myobId = token.user.uid;
+    user.myobRefreshToken = token.refresh_token;
 
     await userRepo.save(user);
 
