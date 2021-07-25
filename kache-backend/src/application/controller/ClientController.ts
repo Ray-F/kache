@@ -51,7 +51,7 @@ class ClientController extends BaseController {
     const userRepo = new UserRepository(mongoAdapter);
     const newUser = await userRepo.save(user);
 
-    createJson(res, 201, `Successfully created new user "${name}!"`, {
+    createJson(res, 201, `Successfully created new user: ${user.name} – ${user.email}`, {
       myobOAuthRedirect: myobService.generateOAuthLink(newUser.id),
     });
   }
@@ -64,11 +64,10 @@ class ClientController extends BaseController {
     const userId = String(req.query.state);
 
     const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
+    const token = await myobService.generateTokens(accessCode);
 
     const mongoAdapter = MongoAdapter.getInstance();
     await mongoAdapter.isConnected();
-
-    const token = await myobService.generateTokens(accessCode);
 
     const userRepo = new UserRepository(mongoAdapter);
 
@@ -92,12 +91,11 @@ class ClientController extends BaseController {
 
     await userRepo.save(user);
 
-    logger.logInfo(`Onboarding new user "${user.name} - ${user.email}..."`);
+    logger.logInfo(`Onboarding new user "${user.name} - ${user.email}:"`);
 
     // If this is set, this means the user has already been onboarded
     if (user.kacheAssetAccountMyobId) {
       logger.logInfo(`Skipping user "${user.name} - ${user.email}" as they already have a linked asset account`);
-      res.sendStatus(200);
       return;
     }
 
@@ -106,6 +104,9 @@ class ClientController extends BaseController {
     const myobLedgerRepo = new MyobLedgerRepository(myobService, cfUri);
     await onboardNewUser(userRepo, myobLedgerRepo, user);
 
+    logger.logInfo(`Finished onboarding new user "${user.name} - ${user.email}"!`)
+
+    // Return response to client once entire process is complete
     res.sendStatus(200);
   }
 
