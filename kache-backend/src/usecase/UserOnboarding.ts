@@ -8,15 +8,11 @@ import { MyobLedgerRepository } from '../infrastructure/MyobLedgerRepository';
 async function onboardNewUser(userRepo: UserRepository,
                               myobLedgerRepo: MyobLedgerRepository,
                               user: User) {
-  await userRepo.save(user);
-
   // Save the asset account UID to the user object in the DB
   user.kacheAssetAccountMyobId = await myobLedgerRepo.createCryptoAccount();
+  await userRepo.save(user);
 
   // TODO: Send user a welcome email
-
-  // Save the user twice, as its possible for the MYOB service gateway to timeout.
-  await userRepo.save(user);
 }
 
 
