@@ -66,18 +66,11 @@ class MyobService {
     };
   }
 
-  async getCFUriFromId(cfId: string) {
-    const resp = await this.makeDomainApiCall('https://api.myob.com/accountright', 'GET');
-    const files = await resp.json() as any[];
-
-    return files.find((file) => file['Id'] === cfId)?.Uri;
-  }
-
   /**
    * Returns a list of company files.
    */
   async getCompanyFiles() {
-    const resp = await this.makeDomainApiCall('https://api.myob.com/accountright', 'GET');
+    const resp = await this.makeDomainApiCall(AR_BASE_URL, 'GET');
 
     if (resp.status == 200) {
       return await resp.json();
@@ -85,6 +78,28 @@ class MyobService {
       return null;
     }
   }
+
+  async getCFUriFromCFId(cfId: string) {
+    const resp = await this.makeDomainApiCall(AR_BASE_URL, 'GET');
+    const files = await resp.json() as any[];
+
+    return files.find((file) => file['Id'] === cfId)?.Uri;
+  }
+
+  /**
+   * Gets the currently authenticated user.
+   */
+  async getAuthenticatedUser() {
+    const validateResp = await this.makeDomainApiCall('https://secure.myob.com/oauth2/v1/Validate?scope=CompanyFile', 'GET');
+
+    const user = await validateResp.json();
+
+    return {
+      myobId: user['Uid'],
+      username: user['username'],
+    };
+  }
+
 
   /**
    * Sends a POST request to MYOB's authorize endpoint.
