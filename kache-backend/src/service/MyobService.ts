@@ -138,7 +138,7 @@ class MyobService {
     const headers = {
       'Authorization': `Bearer ${this.accessToken}`,
       // Encode in base 64
-      'x-myobapi-cftoken': new Buffer(`${credentials.username}:${credentials.password}`).toString('base64'),
+      'x-myobapi-cftoken': Buffer.from(`${credentials.username}:${credentials.password}`).toString('base64'),
       'x-myobapi-key': this.publicKey,
       'x-myobapi-version': 'v2',
     };
