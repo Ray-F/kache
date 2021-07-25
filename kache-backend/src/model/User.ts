@@ -16,6 +16,7 @@ interface User {
   name: string,
   wallets: Wallet[],
 
+  kacheAssetAccountMyobId?: string,
   myobRefreshToken?: string,
 }
 

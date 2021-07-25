@@ -7,6 +7,8 @@ import { MyobService } from '../../service/MyobService';
 import { MongoAdapter } from '../../infrastructure/MongoAdapter';
 import { UserRepository } from '../../infrastructure/UserRepository';
 import { User } from '../../model/User';
+import { onboardNewUser } from '../../usecase/UserOnboarding';
+import { MyobLedgerRepository } from '../../infrastructure/MyobLedgerRepository';
 
 class ClientController extends BaseController {
 
@@ -45,17 +47,23 @@ class ClientController extends BaseController {
     if (user) {
       user.myobRefreshToken = token.refresh_token;
       await userRepo.save(user);
-    } else {
-      const user: User = {
-        name: token.user.username,
-        email: token.user.username,
-        wallets: [],
-
-        myobId: token.user.uid,
-        myobRefreshToken: token.refresh_token,
-      }
-      await userRepo.save(user);
     }
+
+    const newUser: User = {
+      name: token.user.username,
+      email: token.user.username,
+      wallets: [],
+
+      myobId: token.user.uid,
+      myobRefreshToken: token.refresh_token,
+    }
+
+    await userRepo.save(user);
+
+    const cfUri = await myobService.getCFUriFromId('ec8619d9-bb20-4aae-9bbf-1e0e508bb58a');
+    const myobCrmRepo =
+    const myobLedgerRepo = new MyobLedgerRepository(myobService, cfUri)
+    await onboardNewUser(userRepo, myobLedgerRepo, user);
 
     res.sendStatus(200);
   }
