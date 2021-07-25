@@ -66,12 +66,12 @@ import { MyobService } from '../service/MyobService';
  }
  */
 
+const INVOICE_URI = '/sale/invoice';
+
 class MyobInvoiceRepository {
 
   private myobService: MyobService;
   private readonly companyFileUri: string;
-
-  private readonly INVOICE_URI = '/sale/invoice';
 
   constructor(myobService: MyobService, companyFileUri: string) {
     this.myobService = myobService;
@@ -82,7 +82,7 @@ class MyobInvoiceRepository {
    * Returns a list of invoices for the current company file.
    */
   async list(): Promise<object> {
-    const resp = await this.myobService.makeCFApiCall(`${this.companyFileUri}${this.INVOICE_URI}`, 'GET');
+    const resp = await this.myobService.makeCFApiCall(`${this.companyFileUri}${INVOICE_URI}`, 'GET');
 
     return (await resp.json())["Items"];
   }

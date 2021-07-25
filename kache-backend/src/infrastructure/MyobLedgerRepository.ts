@@ -1,13 +1,13 @@
 import { MyobService } from '../service/MyobService';
 import { logger } from '../util/Logger';
 
+const ACCOUNT_URI = '/GeneralLedger/Account'
+const TAXCODE_URI = '/GeneralLedger/TaxCode';
+
 class MyobLedgerRepository {
 
   private myobService: MyobService;
   private readonly cfUri: string;
-
-  private readonly ACCOUNT_URI = '/GeneralLedger/Account';
-  private readonly TAXCODE_URI = '/GeneralLedger/TaxCode';
 
   constructor(myobService: MyobService, cfUri: string) {
     this.myobService = myobService;
@@ -31,7 +31,7 @@ class MyobLedgerRepository {
     // This gets the NT tax code (for no tax) - applies for all bank account assets as tax is applied at income account
     const noTaxTaxCodeUid = await this.getTaxCodeUid();
 
-    const createAccountResp = await this.myobService.makeCFApiCall(`${this.cfUri}${this.ACCOUNT_URI}`,
+    const createAccountResp = await this.myobService.makeCFApiCall(`${this.cfUri}${ACCOUNT_URI}`,
                                                                    'POST',
                                                                    null,
                                                                    {
@@ -61,7 +61,7 @@ class MyobLedgerRepository {
   }
 
   private async getTaxCodeUid(): Promise<string> {
-    const taxCodeResp = await this.myobService.makeCFApiCall(`${this.cfUri}${this.TAXCODE_URI}`, 'GET');
+    const taxCodeResp = await this.myobService.makeCFApiCall(`${this.cfUri}${TAXCODE_URI}`, 'GET');
 
     const taxCodeObject = (await taxCodeResp.json())['Items'].find((taxCode) => taxCode['Code'] === 'N-T');
 
@@ -69,7 +69,7 @@ class MyobLedgerRepository {
   }
 
   private async getAccountUidByDisplayId(accountDisplayId: string): Promise<string> {
-    const assetResp = await this.myobService.makeCFApiCall(`${this.cfUri}${this.ACCOUNT_URI}`, 'GET');
+    const assetResp = await this.myobService.makeCFApiCall(`${this.cfUri}${ACCOUNT_URI}`, 'GET');
 
     const assetAccounts = (await assetResp.json())['Items'];
     const foundAssetAccount = assetAccounts.find((acc) => acc['DisplayID'] === accountDisplayId)
