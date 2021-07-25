@@ -44,7 +44,7 @@ functions:
     description: Callback handler for MYOB OAuth
     handler: dist/lambda.handler
     events:
-      - http: GET /api/client/myob_callback
+      - http: GET /api/client/myob-callback
 
 plugins:
   - serverless-offline
