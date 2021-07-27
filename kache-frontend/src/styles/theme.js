@@ -1,5 +1,5 @@
 
-// Document to store informatio in regards to the theme of the frontend
+// Document to store information in regards to the theme of the frontend
 
 const theme = {
   coloursHex: {
