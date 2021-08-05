@@ -3,6 +3,7 @@ import * as path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import router from './route/MainRouter';
+import cors from 'cors';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(cors());
 
 // Add client build path to static files (so that it can be served)
 app.use(express.static(path.join(__dirname, '../../client/build-latest')));

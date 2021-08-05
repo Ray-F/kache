@@ -9,6 +9,7 @@ const {
   ETH_NODE_URL,
   ETHERSCAN_API_KEY,
   COINLAYER_ACCESS_KEY,
+  MYOB_REDIRECT_URL,
   MYOB_PRIVATE_KEY,
   MYOB_PUBLIC_KEY,
 } = process.env;
@@ -19,6 +20,7 @@ const {
 const PORT = process.env.PORT || 9002;
 
 export default {
+  MYOB_REDIRECT_URL,
   MYOB_PRIVATE_KEY,
   MYOB_PUBLIC_KEY,
   COINLAYER_ACCESS_KEY,

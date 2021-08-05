@@ -46,7 +46,7 @@ class ClientController extends BaseController {
 
     const mongoAdapter = MongoAdapter.getInstance();
     await mongoAdapter.isConnected();
-    const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
+    const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY, Config.MYOB_REDIRECT_URL);
 
     const userRepo = new UserRepository(mongoAdapter);
     const newUser = await userRepo.save(user);
@@ -63,7 +63,7 @@ class ClientController extends BaseController {
     const accessCode = req.body.code;
     const userId = req.body.userId;
 
-    const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
+    const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY, Config.MYOB_REDIRECT_URL);
     const token = await myobService.generateTokens(accessCode);
 
     const mongoAdapter = MongoAdapter.getInstance();

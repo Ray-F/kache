@@ -1,7 +1,9 @@
 import { MyobService } from '../service/MyobService';
 import { logger } from '../util/Logger';
+import { CryptoTransaction } from '../model/CryptoTransaction';
 
-const ACCOUNT_URI = '/GeneralLedger/Account'
+const ACCOUNT_URI = '/GeneralLedger/Account';
+const TRANSACTION_URI = '/GeneralLedger/Transaction';
 const TAXCODE_URI = '/GeneralLedger/TaxCode';
 
 class MyobLedgerRepository {
@@ -60,7 +62,7 @@ class MyobLedgerRepository {
     return await this.getAccountUidByDisplayId('1-1171');
   }
 
-  private async getTaxCodeUid(): Promise<string> {
+  public async getTaxCodeUid(): Promise<string> {
     const taxCodeResp = await this.myobService.makeCFApiCall(`${this.cfUri}${TAXCODE_URI}`, 'GET');
 
     const taxCodeObject = (await taxCodeResp.json())['Items'].find((taxCode) => taxCode['Code'] === 'N-T');

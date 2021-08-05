@@ -1,7 +1,9 @@
 interface CryptoTransaction {
   addressFrom: string,
   addressTo: string,
-  amountNzd: number
+  amountEther: number,
+  feeEther: number,
+  amountNzd: number,
   feeNzd: number,
   timestamp: number,
 }

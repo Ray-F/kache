@@ -14,6 +14,7 @@ provider:
     ETH_NODE_URL: ${env:ETH_NODE_URL}
     ETHERSCAN_API_KEY: ${env:ETHERSCAN_API_KEY}
     COINLAYER_ACCESS_KEY: ${env:COINLAYER_ACCESS_KEY}
+    MYOB_REDIRECT_URL: ${env:MYOB_REDIRECT_URL}
     MYOB_PUBLIC_KEY: ${env:MYOB_PUBLIC_KEY}
     MYOB_PRIVATE_KEY: ${env:MYOB_PRIVATE_KEY}
 
@@ -23,28 +24,40 @@ functions:
     description: Queries payments on the blockchain and links them to MYOB asset accounts
     handler: dist/lambda.handler
     events:
-      - http: GET /api/automation/query-blockchain-payments
+      - http:
+          method: GET
+          path: /api/automation/query-blockchain-payments
+          cors: true
 
   exchange:
     name: CurrencyExchange
     description: Converts an NZD value to an ethereum value (or just exchange rate)
     handler: dist/lambda.handler
     events:
-      - http: GET /api/client/exchange
+      - http:
+          method: GET
+          path: /api/client/exchange
+          cors: true
 
   onboard-unlinked:
     name: OnboardUnlinked
     description: Creates a new user on our DB that is not linked with MYOB
     handler: dist/lambda.handler
     events:
-      - http: POST /api/client/onboard-unlinked
+      - http:
+          method: POST
+          path: /api/client/onboard-unlinked
+          cors: true
 
   myob-auth-callback:
     name: MyobAuthentication
     description: Link existing UserId with MYOB account
     handler: dist/lambda.handler
     events:
-      - http: POST /api/client/myob-auth
+      - http:
+          method: POST
+          path: /api/client/myob-auth
+          cors: true
 
 plugins:
   - serverless-offline

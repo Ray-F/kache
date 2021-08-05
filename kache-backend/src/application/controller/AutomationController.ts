@@ -8,6 +8,8 @@ import Config from '../../util/Config';
 import { EtherService } from '../../service/EtherService';
 import { BaseController, createJson } from './BaseController';
 import { TransactionRepository } from '../../infrastructure/TransactionRepository';
+import { MyobService } from '../../service/MyobService';
+import { MyobLedgerRepository } from '../../infrastructure/MyobLedgerRepository';
 
 class AutomationController extends BaseController {
 
@@ -24,7 +26,9 @@ class AutomationController extends BaseController {
 
     const currencyService = new CurrencyService(Config.COINLAYER_ACCESS_KEY);
 
-    const transactionsProcessed = await processPaymentsReceived(currencyService, etherService, userRepo, mutableConfigRepo, transactionRepo);
+    const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY, Config.MYOB_REDIRECT_URL);
+
+    const transactionsProcessed = await processPaymentsReceived(currencyService, etherService, myobService, userRepo, mutableConfigRepo, transactionRepo);
 
     createJson(res,
                200,

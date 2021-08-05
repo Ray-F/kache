@@ -5,10 +5,6 @@ const MYOB_OAUTH_URL = 'https://secure.myob.com/oauth2/account/authorize';
 const MYOB_AUTHORISE_URL = 'https://secure.myob.com/oauth2/v1/authorize';
 const AR_BASE_URL = 'https://api.myob.com/accountright';
 
-// TODO: Change redirect URL to https://kache.app/onboarding after finished with front end services
-const REDIRECT_URL = 'http://localhost:3000/onboarding';
-
-
 type GeneratedToken = {
   access_token: string,
   refresh_token: string,
@@ -28,11 +24,14 @@ class MyobService {
 
   private readonly publicKey: string;
   private readonly privateKey: string;
+  private readonly redirectUrl: string;
+
   private accessToken: any;
 
-  constructor(apiPublicKey: string, privateKey: string) {
+  constructor(apiPublicKey: string, privateKey: string, redirectUrl: string) {
     this.publicKey = apiPublicKey;
     this.privateKey = privateKey;
+    this.redirectUrl = redirectUrl;
   }
 
   async generateTokens(accessCode: string) {
@@ -41,7 +40,7 @@ class MyobService {
                                           'client_secret': this.privateKey,
                                           'scope': 'CompanyFile',
                                           'code': accessCode,
-                                          'redirect_uri': REDIRECT_URL,
+                                          'redirect_uri': this.redirectUrl,
                                           'grant_type': 'authorization_code',
                                         });
 
@@ -74,7 +73,7 @@ class MyobService {
    * kache account (determined by `userId`).
    */
   generateOAuthLink(userId: string): string {
-    const urlEncoded = encodeURIComponent(REDIRECT_URL);
+    const urlEncoded = encodeURIComponent(this.redirectUrl);
     return `${MYOB_OAUTH_URL}?client_id=${this.publicKey}&redirect_uri=${urlEncoded}&response_type=code&scope=CompanyFile&state=${userId}`;
   }
 
@@ -96,6 +95,12 @@ class MyobService {
     const files = await resp.json() as any[];
 
     return files.find((file) => file['Id'] === cfId)?.Uri;
+  }
+
+  async getTaxCodeUid(cfUri): Promise<string> {
+    const taxCodeResp = await this.makeCFApiCall(`${cfUri}/GeneralLedger/TaxCode`, 'GET');
+    const taxCodeObject = (await taxCodeResp.json())['Items'].find((taxCode) => taxCode['Code'] === 'N-T');
+    return taxCodeObject['UID'];
   }
 
   /**

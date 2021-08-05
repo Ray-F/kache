@@ -54,6 +54,7 @@ class UserRepository {
       name: user.name,
       wallets: user.wallets,
       email: user.email,
+      kacheAssetAccountMyobId: user.kacheAssetAccountMyobId,
       companyFileMyobId: user.companyFileMyobId,
       myobId: user.myobId,
       myobRefreshToken: user.myobRefreshToken,
@@ -81,6 +82,7 @@ function mapDboToUser(dbo: Object): User {
     wallets: dbo['wallets'],
     companyFileMyobId: dbo["companyFileMyobId"],
     ...(dbo['myobId'] && {myobId: dbo['myobId']}),
+    ...(dbo['kacheAssetAccountMyobId'] && {kacheAssetAccountMyobId: dbo['kacheAssetAccountMyobId']}),
     ...(dbo['myobRefreshToken'] && {myobRefreshToken: dbo['myobRefreshToken']})
   };
 }
