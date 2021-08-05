@@ -1,8 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MainRouter from './pages/MainRouter';
 
 import 'normalize.css';
 import './styles/style.scss';
+import App from './App'
+import { BrowserRouter } from 'react-router-dom'
+import Auth0ProviderWithHistory from './auth/Auth0ProviderWithHistory'
 
-ReactDOM.render(<MainRouter />, document.getElementById('root'));
+ReactDOM.render(
+  <BrowserRouter>
+    <Auth0ProviderWithHistory>
+      <App />
+    </Auth0ProviderWithHistory>
+  </BrowserRouter>,
+  document.getElementById('root'));
