@@ -59,6 +59,10 @@ async function processPaymentsReceived(currencyService: CurrencyService,
       // Add all current transactions for this address to all transactions, to be returned
       allTransactions.push.apply(allTransactions, transactions);
 
+      const tokens = await myobService.refreshAccessToken(user.myobRefreshToken);
+      user.myobRefreshToken = tokens.refresh_token;
+      await userRepo.save(user);
+
       const userCfUri = await myobService.getCFUriFromCFId(user.companyFileMyobId);
       const myobLedgerRepo = new MyobTransactionRepository(myobService, userCfUri, user.kacheAssetAccountMyobId);
 
