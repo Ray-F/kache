@@ -7,6 +7,8 @@ import Profile from '../components/Profile'
 import ProfilePage from './ProfilePage'
 import ProtectedRoute from '../auth/ProtectedRoute'
 import Loading from '../auth/Loading'
+import OnboardingPage from './OnboardingPage';
+import CreateAccountPage from './CreateAccountPage';
 
 export default function MainRouter() {
   
@@ -26,6 +28,8 @@ export default function MainRouter() {
         <Route exact path={'/'} component={IndexPage} />
         <Route exact path={'/loading'} component={Loading} />
         <ProtectedRoute path="/profile" component={ProfilePage} />
+        <Route exact path={'/start'} component={CreateAccountPage} />
+        <Route exact path={'/onboarding'} component={OnboardingPage} />
 
         {/* Default path if nothing matches */}
         <Route path={'/'} component={IndexPage} />

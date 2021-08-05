@@ -23,9 +23,9 @@ const clientController = new ClientController();
 const clientRouter = Router();
 router.use('/api/client', clientRouter);
 
-clientRouter.use('/onboard-unlinked', clientController.createNewUnlinkedUser);
-clientRouter.use('/myob-callback', clientController.linkUserOnMyob);
-clientRouter.use('/exchange', clientController.getCurrentExchange);
+clientRouter.post('/onboard-unlinked', clientController.createNewUnlinkedUser);
+clientRouter.post('/myob-auth', clientController.linkUserOnMyob);
+clientRouter.get('/exchange', clientController.getCurrentExchange);
 
 router.use('/api', defaultController.api404);
 
