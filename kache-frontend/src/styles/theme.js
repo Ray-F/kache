@@ -4,8 +4,8 @@
 const theme = {
   coloursHex: {
     primaryLight: '',
-    primaryDark: '',
-    secondaryLight: '',
+    primaryDark: '#192126',
+    secondaryLight: '#00dbb5',
     secondaryDark: ''
   },
   
@@ -17,7 +17,7 @@ const theme = {
   },
   
   fonts: {
-    primary: '',
+    primary: 'Barlow, sans-serif',
     secondary: ''
   }
 }
