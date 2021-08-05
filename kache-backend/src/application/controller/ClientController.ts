@@ -60,8 +60,8 @@ class ClientController extends BaseController {
    * Run when MYOB requires a callback to generate authentication and access tokens.
    */
   public async linkUserOnMyob(req: Request, res: Response) {
-    const accessCode = String(req.query.code);
-    const userId = String(req.query.state);
+    const accessCode = req.body.code;
+    const userId = req.body.userId;
 
     const myobService = new MyobService(Config.MYOB_PUBLIC_KEY, Config.MYOB_PRIVATE_KEY);
     const token = await myobService.generateTokens(accessCode);
@@ -89,6 +89,7 @@ class ClientController extends BaseController {
     // If this is set, this means the user has already been onboarded
     if (user.kacheAssetAccountMyobId) {
       logger.logInfo(`Skipping user "${user.name} - ${user.email}" as they already have a linked asset account`);
+      res.sendStatus(200);
       return;
     }
 

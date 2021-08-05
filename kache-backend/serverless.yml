@@ -41,10 +41,10 @@ functions:
 
   myob-auth-callback:
     name: MyobAuthentication
-    description: Callback handler for MYOB OAuth
+    description: Link existing UserId with MYOB account
     handler: dist/lambda.handler
     events:
-      - http: GET /api/client/myob-callback
+      - http: POST /api/client/myob-auth
 
 plugins:
   - serverless-offline
